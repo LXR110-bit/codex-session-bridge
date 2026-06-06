@@ -10,6 +10,51 @@
 
 ---
 
+## 如何分享 / 如何安装这个 skill
+
+把这个仓库链接发给别人即可：
+
+```text
+https://github.com/LXR110-bit/codex-profile-switch
+```
+
+对方如果想安装，可以直接复制下面这段命令：
+
+```bash
+git clone https://github.com/LXR110-bit/codex-profile-switch.git
+cd codex-profile-switch
+./install.sh
+```
+
+安装后有两种用法：
+
+1. **命令行直接使用**
+
+   ```bash
+   ./switch.sh chatgpt   # 切回个人 ChatGPT 账号
+   ./switch.sh api       # 切到 API 代理
+   ./switch.sh --verify  # 检查状态
+   ```
+
+2. **作为 Claude skill 使用**
+
+   如果安装时选择软链到 `~/.claude/skills/`，之后可以直接对 Claude 说：
+
+   ```text
+   切 api
+   切回个人账号
+   codex 切档案
+   switch codex to api
+   ```
+
+适合发给别人的一句话介绍：
+
+```text
+这是一个 Codex Desktop profile 切换工具，可以在个人 ChatGPT 账号和 API 代理之间切换，同时尽量避免历史会话列表消失。
+```
+
+---
+
 ## 中文快速开始
 
 ```bash
