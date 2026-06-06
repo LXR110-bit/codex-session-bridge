@@ -109,6 +109,36 @@ be visible."
 If either is missing, point the user at the templates in `examples/` and the
 [README](README.md) setup section.
 
+## API 中转站和密钥说明 / Credentials and API proxy setup
+
+不要要求用户把 API key 直接粘贴到对话里。
+
+这个 skill 不保存、不托管、不管理用户的 API key。切换到 API profile 之前，用户必须先在本机准备好这个文件：
+
+```text
+~/.codex/config.toml.profile.api
+```
+
+这个文件里应该包含 API provider 配置，例如 OpenAI 兼容接口的 `base_url`，以及 Codex 读取密钥用的 `env_key`，例如 `OPENAI_API_KEY`。
+
+如果用户问：
+
+> 我是不是把 API 中转站地址或者 API key 发给你，以后就能直接切了？
+
+应该解释：
+
+> 不是。第一次使用 API profile 前，需要你先在本机配置好 `~/.codex/config.toml.profile.api`。这个 skill 不会保存你的 API key，也不建议你把密钥发到聊天里。配置好之后，我才能帮你执行“切 api / 切回个人账号”。
+
+当用户要求切到 API 时，按这个流程处理：
+
+1. 先检查 `~/.codex/config.toml.profile.api` 是否存在；
+2. 如果不存在，告诉用户需要先在本机创建这个 profile；
+3. 不要要求用户把真实 API key 发到聊天里；
+4. 如果需要，可以给用户一个本地配置模板，让用户自己在本机编辑；
+5. profile 文件存在后，再执行切换命令；
+6. 切换后必须执行 `--verify`；
+7. 最后提醒用户重启 Codex Desktop。
+
 ## Backups and rollback
 
 Every run leaves a timestamped folder in `~/.codex/jsonl_backup_<TS>/`
@@ -134,4 +164,3 @@ cp ~/.codex/config.toml ~/.codex/config.toml.profile.chatgpt    # or .api
 
 - [docs/HOW_IT_WORKS.md](docs/HOW_IT_WORKS.md) — internal mechanics
 - [docs/KNOWN_ISSUES.md](docs/KNOWN_ISSUES.md) — war stories worth reading before debugging
-
