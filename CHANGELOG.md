@@ -1,5 +1,16 @@
 # Changelog
 
+## v1.0.2
+
+- Add Chinese README banner image.
+- Add GitHub Actions CI with bash syntax, ShellCheck, and fake `CODEX_HOME` functional tests.
+- Add `CONTRIBUTING.md`.
+- Add `./switch.sh --list-backups`.
+- Add `./switch.sh --rollback <backup-dir>` for backups created by v1.0.2+.
+- Add manifest-based JSONL restore for safer rollback.
+- Add basic custom provider migration support with `--provider` and `--from`.
+- Add terminal demo visual asset.
+
 ## v1.0.1
 
 - Add Chinese README section for Chinese users.

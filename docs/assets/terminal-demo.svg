@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="520" viewBox="0 0 980 520" role="img" aria-label="codex-profile-switch terminal demo">
+  <rect width="980" height="520" rx="18" fill="#0d1117"/>
+  <rect x="0" y="0" width="980" height="44" rx="18" fill="#161b22"/>
+  <circle cx="26" cy="22" r="6" fill="#ff5f56"/><circle cx="48" cy="22" r="6" fill="#ffbd2e"/><circle cx="70" cy="22" r="6" fill="#27c93f"/>
+  <text x="92" y="28" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="14" fill="#8b949e">真实命令流程示意</text>
+  <text x="38" y="86" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="17" fill="#7ee787">$ ./switch.sh --dry-run api</text>
+  <text x="38" y="122" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="16" fill="#c9d1d9">Provider change: openai -&gt; openai-custom</text>
+  <text x="38" y="154" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="16" fill="#c9d1d9">Would rewrite jsonl + sqlite, without writing files</text>
+  <text x="38" y="204" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="17" fill="#7ee787">$ ./switch.sh api</text>
+  <text x="38" y="240" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="16" fill="#58a6ff">==&gt; Backup current config, sqlite, and jsonl manifest</text>
+  <text x="38" y="272" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="16" fill="#58a6ff">==&gt; Rewrite jsonl: openai -&gt; openai-custom</text>
+  <text x="38" y="304" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="16" fill="#58a6ff">==&gt; Rewrite sqlite: openai -&gt; openai-custom</text>
+  <text x="38" y="354" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="17" fill="#7ee787">$ ./switch.sh --verify</text>
+  <text x="38" y="390" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="16" fill="#c9d1d9">sqlite: openai-custom | jsonl: openai-custom</text>
+  <rect x="38" y="428" width="904" height="56" rx="10" fill="#10291b" stroke="#2ea043"/>
+  <text x="60" y="462" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="16" fill="#7ee787">OK：历史会话已迁移；如需恢复，可使用 --rollback 备份目录。</text>
+</svg>

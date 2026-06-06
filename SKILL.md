@@ -47,6 +47,19 @@ If the user wants to preview changes before writing files, run dry-run:
 ~/.claude/skills/codex-profile-switch/switch.sh --dry-run api
 ```
 
+If the user needs rollback support, list backups first:
+
+```bash
+~/.claude/skills/codex-profile-switch/switch.sh --list-backups
+~/.claude/skills/codex-profile-switch/switch.sh --rollback <backup-dir>
+```
+
+For non-default API provider names, use explicit migration providers:
+
+```bash
+~/.claude/skills/codex-profile-switch/switch.sh api --provider my-proxy --from openai
+```
+
 ### 3. Run the switch
 
 ```bash
@@ -99,8 +112,10 @@ If either is missing, point the user at the templates in `examples/` and the
 ## Backups and rollback
 
 Every run leaves a timestamped folder in `~/.codex/jsonl_backup_<TS>/`
-containing `config.toml.bak`, `state_5.sqlite.bak`, and every rewritten jsonl.
-To roll back: stop Codex, copy the `.bak` files back, restart.
+containing `config.toml.bak`, `state_5.sqlite.bak`, `manifest.tsv`, and every
+rewritten jsonl. To roll back: stop Codex and run
+`switch.sh --rollback <backup-dir>`. Backups created before v1.0.2 do not have
+`manifest.tsv`, so automated rollback restores config/sqlite only for those older backups.
 
 ## When the user changes config inside Codex GUI
 

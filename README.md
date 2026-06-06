@@ -12,6 +12,8 @@
 
 ![switch.sh --verify 示例](docs/assets/verify-example.svg)
 
+![命令行流程示意](docs/assets/terminal-demo.svg)
+
 ---
 
 ## 如何分享 / 如何安装这个 skill
@@ -46,6 +48,8 @@ git clone https://github.com/LXR110-bit/codex-profile-switch.git && cd codex-pro
    ./switch.sh --dry-run api  # 预览会改什么，不实际写文件
    ./switch.sh --verify       # 检查状态
    ./switch.sh --doctor       # 诊断环境和配置
+   ./switch.sh --list-backups # 查看备份
+   ./switch.sh --rollback <backup-dir> # 从备份恢复
    ```
 
 2. **作为 Claude skill 使用**
@@ -108,6 +112,8 @@ $EDITOR ~/.codex/config.toml.profile.api
 ./switch.sh --dry-run api  # 预览会改什么，不实际写文件
 ./switch.sh --verify       # 检查当前 jsonl + sqlite 状态
 ./switch.sh --doctor       # 诊断依赖、profile、Codex 进程和数据文件
+./switch.sh --list-backups # 查看备份
+./switch.sh --rollback <backup-dir> # 从备份恢复
 ./switch.sh --help
 ```
 
@@ -134,6 +140,8 @@ $EDITOR ~/.codex/config.toml.profile.api
 ./switch.sh --dry-run api
 ./switch.sh --verify
 ./switch.sh --doctor
+./switch.sh --list-backups
+./switch.sh --rollback <backup-dir>
 ```
 
 `--verify` 很重要：理想情况下，sqlite 和 jsonl 里都应该只剩一个 `model_provider` 值。如果出现两个值，说明迁移没完全成功，建议先不要打开 Codex，重新执行切换或排查问题。
@@ -157,6 +165,41 @@ Claude 执行时应该遵循：
 
 ---
 
+## 回滚 / 自定义 provider
+
+### 回滚
+
+查看备份：
+
+```bash
+./switch.sh --list-backups
+```
+
+从某个备份恢复：
+
+```bash
+./switch.sh --rollback ~/.codex/jsonl_backup_YYYYMMDD_HHMMSS
+```
+
+说明：v1.0.2 之后创建的备份会带 `manifest.tsv`，可以恢复 config、sqlite 和被改写的 jsonl。更早版本的备份没有 manifest，只能安全恢复 config/sqlite。
+
+### 自定义 provider
+
+默认情况下：
+
+- `chatgpt`：`openai`
+- `api`：`openai-custom`
+
+如果你的 API profile 使用其他 provider 名，可以指定迁移口径：
+
+```bash
+./switch.sh api --provider my-proxy --from openai
+```
+
+注意：`--provider` 只控制历史会话里的 `model_provider` 迁移；你的 `~/.codex/config.toml.profile.api` 里也必须写对应的 `model_provider = "my-proxy"`。
+
+---
+
 ## 安全说明
 
 - 每次切换前都会备份会改动的文件；
@@ -165,6 +208,16 @@ Claude 执行时应该遵循：
 - API profile 示例里的 `base_url` 是占位符，分享前请确认没有把自己的真实代理地址或密钥写进去。
 
 ---
+
+## CI / 贡献
+
+本仓库已配置 GitHub Actions，会自动检查：
+
+- `bash -n switch.sh install.sh`
+- `shellcheck switch.sh install.sh`
+- fake `CODEX_HOME` 下的切换、验证、回滚流程
+
+贡献说明见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
 ## 版本记录
 
@@ -210,6 +263,8 @@ and switch:
 ./switch.sh --dry-run api  # preview changes without writing files
 ./switch.sh --verify       # print current state
 ./switch.sh --doctor       # diagnose environment and profile setup
+./switch.sh --list-backups # list backups
+./switch.sh --rollback <backup-dir> # restore from backup
 ./switch.sh --help
 ```
 
@@ -292,6 +347,8 @@ login. API auth comes from `OPENAI_API_KEY` or wherever your proxy stores it.
 ./switch.sh --dry-run api  # preview changes without writing files
 ./switch.sh --verify       # show current jsonl + sqlite state
 ./switch.sh --doctor       # diagnose environment and profile setup
+./switch.sh --list-backups # list backups
+./switch.sh --rollback <backup-dir> # restore from backup
 ./switch.sh --help
 ./switch.sh --version
 ```
