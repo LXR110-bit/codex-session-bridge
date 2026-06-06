@@ -8,6 +8,8 @@
 
 它既可以作为独立命令行工具使用，也可以作为 Claude skill 使用。
 
+![switch.sh --verify 示例](docs/assets/verify-example.svg)
+
 ---
 
 ## 如何分享 / 如何安装这个 skill
@@ -26,14 +28,22 @@ cd codex-profile-switch
 ./install.sh
 ```
 
+也可以用一行命令：
+
+```bash
+git clone https://github.com/LXR110-bit/codex-profile-switch.git && cd codex-profile-switch && ./install.sh
+```
+
 安装后有两种用法：
 
 1. **命令行直接使用**
 
    ```bash
-   ./switch.sh chatgpt   # 切回个人 ChatGPT 账号
-   ./switch.sh api       # 切到 API 代理
-   ./switch.sh --verify  # 检查状态
+   ./switch.sh chatgpt        # 切回个人 ChatGPT 账号
+   ./switch.sh api            # 切到 API 代理
+   ./switch.sh --dry-run api  # 预览会改什么，不实际写文件
+   ./switch.sh --verify       # 检查状态
+   ./switch.sh --doctor       # 诊断环境和配置
    ```
 
 2. **作为 Claude skill 使用**
@@ -91,9 +101,11 @@ $EDITOR ~/.codex/config.toml.profile.api
 然后切换：
 
 ```bash
-./switch.sh chatgpt   # 切回个人 ChatGPT 账号
-./switch.sh api       # 切到 API 代理
-./switch.sh --verify  # 检查当前 jsonl + sqlite 状态
+./switch.sh chatgpt        # 切回个人 ChatGPT 账号
+./switch.sh api            # 切到 API 代理
+./switch.sh --dry-run api  # 预览会改什么，不实际写文件
+./switch.sh --verify       # 检查当前 jsonl + sqlite 状态
+./switch.sh --doctor       # 诊断依赖、profile、Codex 进程和数据文件
 ./switch.sh --help
 ```
 
@@ -117,7 +129,9 @@ $EDITOR ~/.codex/config.toml.profile.api
 ```bash
 ./switch.sh chatgpt
 ./switch.sh api
+./switch.sh --dry-run api
 ./switch.sh --verify
+./switch.sh --doctor
 ```
 
 `--verify` 很重要：理想情况下，sqlite 和 jsonl 里都应该只剩一个 `model_provider` 值。如果出现两个值，说明迁移没完全成功，建议先不要打开 Codex，重新执行切换或排查问题。
@@ -147,6 +161,12 @@ Claude 执行时应该遵循：
 - Codex 正在运行时脚本会拒绝执行，避免并发写入；
 - 这个工具不管理密钥：ChatGPT 登录态由 Codex 自己维护，API key 由你的环境变量或代理配置维护；
 - API profile 示例里的 `base_url` 是占位符，分享前请确认没有把自己的真实代理地址或密钥写进去。
+
+---
+
+## 版本记录
+
+版本记录见 [CHANGELOG.md](CHANGELOG.md)。
 
 ---
 
@@ -183,9 +203,11 @@ Then create your two profile files (one-time setup, see [Setup](#setup) below)
 and switch:
 
 ```bash
-./switch.sh chatgpt   # use ChatGPT personal account
-./switch.sh api       # use API proxy
-./switch.sh --verify  # print current state
+./switch.sh chatgpt        # use ChatGPT personal account
+./switch.sh api            # use API proxy
+./switch.sh --dry-run api  # preview changes without writing files
+./switch.sh --verify       # print current state
+./switch.sh --doctor       # diagnose environment and profile setup
 ./switch.sh --help
 ```
 
@@ -263,9 +285,11 @@ login. API auth comes from `OPENAI_API_KEY` or wherever your proxy stores it.
 ### As a CLI
 
 ```bash
-./switch.sh chatgpt   # switch to ChatGPT profile, migrate history
-./switch.sh api       # switch to API profile, migrate history
-./switch.sh --verify  # show current jsonl + sqlite state
+./switch.sh chatgpt        # switch to ChatGPT profile, migrate history
+./switch.sh api            # switch to API profile, migrate history
+./switch.sh --dry-run api  # preview changes without writing files
+./switch.sh --verify       # show current jsonl + sqlite state
+./switch.sh --doctor       # diagnose environment and profile setup
 ./switch.sh --help
 ./switch.sh --version
 ```

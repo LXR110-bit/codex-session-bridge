@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="390" viewBox="0 0 920 390" role="img" aria-label="codex-profile-switch verify example">
+  <rect width="920" height="390" rx="18" fill="#0d1117"/>
+  <rect x="0" y="0" width="920" height="42" rx="18" fill="#161b22"/>
+  <circle cx="24" cy="21" r="6" fill="#ff5f56"/>
+  <circle cx="44" cy="21" r="6" fill="#ffbd2e"/>
+  <circle cx="64" cy="21" r="6" fill="#27c93f"/>
+  <text x="84" y="27" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="14" fill="#8b949e">codex-profile-switch</text>
+
+  <text x="36" y="82" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="18" fill="#c9d1d9">$ ./switch.sh --verify</text>
+  <text x="36" y="124" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="17" fill="#58a6ff">=== sqlite threads.model_provider ===</text>
+  <text x="58" y="158" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="17" fill="#c9d1d9">openai-custom|185</text>
+
+  <text x="36" y="210" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="17" fill="#58a6ff">=== jsonl model_provider distribution ===</text>
+  <text x="58" y="244" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="17" fill="#c9d1d9">185 "model_provider":"openai-custom"</text>
+
+  <rect x="36" y="286" width="848" height="62" rx="10" fill="#10291b" stroke="#2ea043"/>
+  <text x="58" y="324" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace" font-size="17" fill="#7ee787">OK: sqlite and jsonl agree on one provider. Restart Codex Desktop.</text>
+</svg>

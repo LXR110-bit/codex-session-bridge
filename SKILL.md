@@ -32,7 +32,22 @@ helper services are ignored.
 If blocked, tell the user: **"Cmd+Q to fully quit Codex (closing the window is
 not enough), then retry."**
 
-### 2. Run the switch
+### 2. Diagnose or preview when appropriate
+
+If setup looks suspicious, run doctor first:
+
+```bash
+~/.claude/skills/codex-profile-switch/switch.sh --doctor
+```
+
+If the user wants to preview changes before writing files, run dry-run:
+
+```bash
+~/.claude/skills/codex-profile-switch/switch.sh --dry-run chatgpt
+~/.claude/skills/codex-profile-switch/switch.sh --dry-run api
+```
+
+### 3. Run the switch
 
 ```bash
 ~/.claude/skills/codex-profile-switch/switch.sh chatgpt   # to ChatGPT account
@@ -48,7 +63,7 @@ The script:
    macOS bash 3.2 doesn't expand it.)
 4. Updates the `threads.model_provider` column in `state_5.sqlite`.
 
-### 3. Verify (mandatory)
+### 4. Verify (mandatory)
 
 ```bash
 ~/.claude/skills/codex-profile-switch/switch.sh --verify
@@ -59,7 +74,7 @@ appear, the rewrite missed something — investigate before letting the user
 reopen Codex (Codex will re-sync sqlite from jsonl at launch and bake the
 inconsistency in).
 
-### 4. Tell the user to restart Codex
+### 5. Tell the user to restart Codex
 
 After verification passes: "Restart Codex — all history conversations will
 be visible."
@@ -104,3 +119,4 @@ cp ~/.codex/config.toml ~/.codex/config.toml.profile.chatgpt    # or .api
 
 - [docs/HOW_IT_WORKS.md](docs/HOW_IT_WORKS.md) — internal mechanics
 - [docs/KNOWN_ISSUES.md](docs/KNOWN_ISSUES.md) — war stories worth reading before debugging
+

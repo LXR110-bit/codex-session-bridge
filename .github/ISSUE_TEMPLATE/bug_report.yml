@@ -1,0 +1,69 @@
+name: Bug report
+about: Report a problem with codex-profile-switch
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a problem. Please quit Codex Desktop before running diagnostics.
+
+  - type: input
+    id: codex-version
+    attributes:
+      label: Codex Desktop version
+      description: What Codex Desktop version are you using?
+      placeholder: e.g. 0.x.x / screenshot from About page
+    validations:
+      required: false
+
+  - type: input
+    id: os-version
+    attributes:
+      label: OS version
+      placeholder: e.g. macOS 15.x
+    validations:
+      required: false
+
+  - type: textarea
+    id: command
+    attributes:
+      label: Command you ran
+      description: Paste the exact command.
+      render: bash
+      placeholder: ./switch.sh api
+    validations:
+      required: true
+
+  - type: textarea
+    id: verify-output
+    attributes:
+      label: Output of ./switch.sh --verify
+      render: text
+      placeholder: Paste output here. Remove any private paths or secrets if needed.
+    validations:
+      required: true
+
+  - type: textarea
+    id: doctor-output
+    attributes:
+      label: Output of ./switch.sh --doctor
+      render: text
+      placeholder: Paste output here. Remove any private paths or secrets if needed.
+    validations:
+      required: false
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Are conversations missing, counts wrong, config broken, or did Codex fail to start?
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: false
