@@ -1,5 +1,7 @@
 # codex-profile-switch
 
+![Codex Profile Switch 横幅](docs/assets/codex-profile-switch-banner.png)
+
 > 中文说明在前，English README follows below.
 
 在 Codex Desktop 里，在 **个人 ChatGPT 账号** 和 **第三方 OpenAI 兼容 API 代理** 之间切换，同时尽量避免历史会话列表“消失”。
