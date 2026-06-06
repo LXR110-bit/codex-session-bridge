@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  shell:
+    name: Shell checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck sqlite3
+
+      - name: Bash syntax
+        run: |
+          bash -n switch.sh
+          bash -n install.sh
+
+      - name: ShellCheck
+        run: shellcheck switch.sh install.sh
+
+      - name: CLI smoke test
+        run: |
+          ./switch.sh --version
+          ./switch.sh --help
+
+      - name: Functional test with fake CODEX_HOME
+        run: |
+          tmp="$(mktemp -d)"
+          mkdir -p "$tmp/sessions/2026/06/06" "$tmp/archived_sessions"
+          printf 'model_provider = "openai"\n' > "$tmp/config.toml.profile.chatgpt"
+          printf 'model_provider = "openai-custom"\n[model_providers.openai-custom]\nbase_url = "https://example.invalid/v1"\n' > "$tmp/config.toml.profile.api"
+          printf 'model_provider = "openai"\n' > "$tmp/config.toml"
+          printf '{"model_provider":"openai","x":1}\n' > "$tmp/sessions/2026/06/06/test.jsonl"
+          sqlite3 "$tmp/state_5.sqlite" 'create table threads (id text, model_provider text); insert into threads values ("1","openai");'
+
+          CODEX_HOME="$tmp" ./switch.sh --doctor
+          CODEX_HOME="$tmp" ./switch.sh --dry-run api
+          CODEX_HOME="$tmp" ./switch.sh api
+          CODEX_HOME="$tmp" ./switch.sh --verify | tee "$tmp/verify.txt"
+          grep -q 'openai-custom' "$tmp/verify.txt"
+
+          backup="$(find "$tmp" -maxdepth 1 -type d -name 'jsonl_backup_*' | head -n 1)"
+          CODEX_HOME="$tmp" ./switch.sh --rollback "$backup"
+          CODEX_HOME="$tmp" ./switch.sh --verify | tee "$tmp/verify-rollback.txt"
+          grep -q 'openai' "$tmp/verify-rollback.txt"
