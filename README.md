@@ -1,5 +1,113 @@
 # codex-profile-switch
 
+> 中文说明在前，English README follows below.
+
+在 Codex Desktop 里，在 **个人 ChatGPT 账号** 和 **第三方 OpenAI 兼容 API 代理** 之间切换，同时尽量避免历史会话列表“消失”。
+
+很多人切换 Codex 的 `model_provider` 后，会发现之前的对话不见了。其实对话没有被删除，只是 Codex 会按当前 provider 过滤会话列表。这个工具会在切换 profile 时，同步改写 jsonl 会话源文件和 sqlite 索引里的 `model_provider`，让两个账号/接口侧都能看到完整历史。
+
+它既可以作为独立命令行工具使用，也可以作为 Claude skill 使用。
+
+---
+
+## 中文快速开始
+
+```bash
+git clone https://github.com/LXR110-bit/codex-profile-switch.git
+cd codex-profile-switch
+./install.sh
+```
+
+安装脚本会做几件事：
+
+- 检查依赖是否存在；
+- 给 `switch.sh` 增加可执行权限；
+- 可选地把本目录软链到 `~/.claude/skills/`，方便 Claude 直接调用；
+- 提醒你还需要准备哪些 Codex profile 配置文件。
+
+第一次使用前，需要准备两个配置文件：
+
+| 用途 | 文件 | `model_provider` |
+|---|---|---|
+| 个人 ChatGPT 账号 | `~/.codex/config.toml.profile.chatgpt` | `openai` |
+| API 代理 | `~/.codex/config.toml.profile.api` | `openai-custom` |
+
+最简单的方式：
+
+```bash
+# 如果你当前就是个人 ChatGPT 登录态，可以先复制当前配置
+cp ~/.codex/config.toml ~/.codex/config.toml.profile.chatgpt
+
+# API 代理配置从模板开始，再编辑 base_url / 环境变量等
+cp examples/config.toml.api.example ~/.codex/config.toml.profile.api
+$EDITOR ~/.codex/config.toml.profile.api
+```
+
+然后切换：
+
+```bash
+./switch.sh chatgpt   # 切回个人 ChatGPT 账号
+./switch.sh api       # 切到 API 代理
+./switch.sh --verify  # 检查当前 jsonl + sqlite 状态
+./switch.sh --help
+```
+
+每次切换后，请**重启 Codex Desktop**，这样会话列表才会按新状态刷新。
+
+---
+
+## 适合谁
+
+- 月底 ChatGPT 额度不够，想临时切到 API 代理；
+- 平时用个人账号，特定任务想用另一个 OpenAI 兼容接口；
+- 想在多个 provider 之间切换，但不想每次切完历史对话都“看不见”；
+- 想把这个能力交给 Claude skill 自动执行，而不是每次手动改配置。
+
+---
+
+## 中文使用说明
+
+### 命令行模式
+
+```bash
+./switch.sh chatgpt
+./switch.sh api
+./switch.sh --verify
+```
+
+`--verify` 很重要：理想情况下，sqlite 和 jsonl 里都应该只剩一个 `model_provider` 值。如果出现两个值，说明迁移没完全成功，建议先不要打开 Codex，重新执行切换或排查问题。
+
+### Claude skill 模式
+
+运行 `./install.sh` 后，如果你选择建立软链，Claude 可以通过这些自然语言触发：
+
+- “切 api”
+- “切回个人账号”
+- “codex 切档案”
+- “switch codex to api”
+- “switch codex to chatgpt”
+
+Claude 执行时应该遵循：
+
+1. 先确认 Codex Desktop 没在运行；
+2. 执行 `switch.sh <target>`；
+3. 执行 `switch.sh --verify`；
+4. 提醒用户重启 Codex。
+
+---
+
+## 安全说明
+
+- 每次切换前都会备份会改动的文件；
+- Codex 正在运行时脚本会拒绝执行，避免并发写入；
+- 这个工具不管理密钥：ChatGPT 登录态由 Codex 自己维护，API key 由你的环境变量或代理配置维护；
+- API profile 示例里的 `base_url` 是占位符，分享前请确认没有把自己的真实代理地址或密钥写进去。
+
+---
+
+## English README
+
+
 Switch [Codex Desktop](https://chatgpt.com/codex) between your **ChatGPT
 personal account** and a **third-party OpenAI-compatible API proxy** without
 losing your conversation history.
