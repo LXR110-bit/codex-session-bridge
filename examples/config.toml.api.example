@@ -1,0 +1,31 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Example: Third-party API proxy profile (OpenAI-compatible endpoint)
+#
+# Save as: ~/.codex/config.toml.profile.api
+#
+# Notes:
+# - Provider MUST be named something other than "openai" — recent Codex
+#   versions forbid overriding the built-in. We use "openai-custom" here;
+#   keep this name consistent because switch.sh hard-codes it.
+# - base_url must point to your OpenAI-compatible proxy.
+# - Most proxies require an OpenAI-style API key. Codex picks it up from the
+#   OPENAI_API_KEY environment variable, the macOS Keychain, or wherever the
+#   proxy's own auth flow stores it. This skill does NOT manage credentials.
+# ─────────────────────────────────────────────────────────────────────────────
+
+model_provider = "openai-custom"
+model = "gpt-5.5"
+model_reasoning_effort = "xhigh"
+
+# Optional: pin the context window
+# model_context_window = 1000000
+# model_auto_compact_token_limit = 900000
+
+[model_providers.openai-custom]
+name = "openai-custom"
+base_url = "https://YOUR_PROXY_HOST/v1"   # <- edit this
+wire_api = "responses"
+requires_openai_auth = true
+
+# Put any non-provider settings (MCP servers, marketplaces, projects, desktop, etc.)
+# here so they apply in API mode too.

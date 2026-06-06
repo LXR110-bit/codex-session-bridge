@@ -1,0 +1,21 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Example: ChatGPT personal account profile
+#
+# Save as: ~/.codex/config.toml.profile.chatgpt
+#
+# Notes:
+# - No [model_providers] block — Codex defaults to its built-in "openai" provider.
+# - "openai" is reserved; you cannot override it in [model_providers] in recent
+#   Codex versions ("Built-in providers cannot be overridden").
+# - Auth comes from your ChatGPT login (handled by Codex GUI, not this skill).
+# ─────────────────────────────────────────────────────────────────────────────
+
+model = "gpt-5.5"
+model_reasoning_effort = "medium"
+
+# Optional: pin the context window if you want predictable behavior across switches
+# model_context_window = 1000000
+# model_auto_compact_token_limit = 900000
+
+# Put any non-provider settings (MCP servers, marketplaces, projects, desktop, etc.)
+# here so they apply in ChatGPT mode too.
