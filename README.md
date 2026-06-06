@@ -104,6 +104,49 @@ cp examples/config.toml.api.example ~/.codex/config.toml.profile.api
 $EDITOR ~/.codex/config.toml.profile.api
 ```
 
+### 关于 API 中转站地址和 API key
+
+这个工具不是云端账号切换器，也不会替你保存 API 中转站地址或 API key。
+
+第一次使用 API profile 前，你需要先在本机配置好：
+
+```text
+~/.codex/config.toml.profile.api
+```
+
+这个文件里需要写你的 API 代理配置，例如：
+
+```toml
+model_provider = "openai-custom"
+
+[model_providers.openai-custom]
+name = "API Proxy"
+base_url = "https://你的中转站地址/v1"
+env_key = "OPENAI_API_KEY"
+```
+
+API key 建议通过你本机的环境变量管理，例如：
+
+```bash
+export OPENAI_API_KEY="sk-xxxx"
+```
+
+不建议把真实 API key 发给 AI，也不建议把带有密钥的配置文件上传或分享。
+
+配置完成后，Claude skill 做的事情只是帮你执行本机的切换命令：
+
+```bash
+./switch.sh api
+./switch.sh chatgpt
+./switch.sh --verify
+```
+
+也就是说：
+
+- 第一次使用前：你需要自己在本机配置好 API profile；
+- 之后再切换：可以让 Claude skill 帮你执行“切 api / 切回个人账号”；
+- API 地址和 API key：建议始终留在你自己的本机环境里，不要发到聊天里。
+
 然后切换：
 
 ```bash
@@ -197,6 +240,30 @@ Claude 执行时应该遵循：
 ```
 
 注意：`--provider` 只控制历史会话里的 `model_provider` 迁移；你的 `~/.codex/config.toml.profile.api` 里也必须写对应的 `model_provider = "my-proxy"`。
+
+---
+
+## 常见问题
+
+### 我需要把 API 中转站地址发给 AI 吗？
+
+不需要。
+
+第一次使用前，你需要自己在本机的 `~/.codex/config.toml.profile.api` 里配置 API 中转站地址。配置完成后，Claude skill 只是帮你执行本机切换命令。
+
+### 我需要把 API key 发给 AI 吗？
+
+不建议，也不需要。
+
+API key 建议放在你自己的本机环境变量里，例如 `OPENAI_API_KEY`。这个工具不会保存、上传或托管你的 API key。
+
+### 为什么我配置好了 profile，Claude 才能帮我切？
+
+因为 Claude skill 本质上只是调用本机的 `switch.sh`。它需要先有现成的 `chatgpt` 和 `api` 两个 profile 文件，才能在两套配置之间切换。
+
+### 切换后为什么要重启 Codex？
+
+因为 Codex Desktop 需要重新读取配置和会话索引。每次切换后，请重启 Codex Desktop，这样会话列表才会按新的 provider 状态刷新。
 
 ---
 
