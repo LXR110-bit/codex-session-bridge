@@ -31,61 +31,79 @@ Codex Profile Switch：给不会开发的人用的 Codex 账号/API 切换工具
 https://github.com/LXR110-bit/codex-profile-switch
 ```
 
-对方复制下面三行命令就能安装：
+对方只需要复制这一行命令到终端里运行：
 
 ```bash
-git clone https://github.com/LXR110-bit/codex-profile-switch.git
-cd codex-profile-switch
-./install.sh
+bash <(curl -fsSL https://raw.githubusercontent.com/LXR110-bit/codex-profile-switch/main/start.sh)
 ```
 
-安装过程中，如果还没有 API 配置，安装器会问你要不要运行向导。普通用户选 `Y` 即可。
+这个小白向导会自动完成：
+
+- 下载/更新工具；
+- 保存当前 Codex 个人账号配置；
+- 让用户粘贴 API 地址；
+- 询问是否现在切到 API；
+- 提醒重启 Codex，并由 Codex 弹窗收 API key。
+
+> 不需要把 API key 发给 AI。key 由 Codex Desktop 自己弹窗接收，并保存到 macOS Keychain。
 
 ---
 
-## 中文快速开始：3 步就够
+## 中文快速开始：只做 3 件事
 
-### 第 1 步：安装
+### 第 1 步：复制一行命令
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/LXR110-bit/codex-profile-switch/main/start.sh)
+```
+
+### 第 2 步：粘贴 API 地址
+
+向导会问你 API 地址，例如：
+
+```text
+https://api.deepseek.com/v1
+```
+
+模型不知道填什么就直接回车。
+
+### 第 3 步：重启 Codex
+
+如果你选择“现在切到 API”，脚本会自动切换并检查状态。
+
+然后你只需要：
+
+1. 完全退出 Codex Desktop；
+2. 重新打开 Codex Desktop；
+3. 如果 Codex 弹窗要 API key，就粘贴你的 `sk-...` key。
+
+历史会话不会消失。
+
+---
+
+## 高级/手动安装
+
+如果你不想用一行命令，也可以手动下载仓库：
 
 ```bash
 git clone https://github.com/LXR110-bit/codex-profile-switch.git
 cd codex-profile-switch
+./start.sh
+```
+
+只想安装、不马上配置，可以运行：
+
+```bash
 ./install.sh
 ```
 
-安装脚本会：
-
-- 检查本机依赖；
-- 给脚本加执行权限；
-- 可选安装成 Claude skill；
-- 如果 API 配置不存在，会提示你启动 API 配置向导。
-
-### 第 2 步：配置 API 代理
-
-如果安装时没有自动进入向导，也可以手动运行：
+只想重新配置 API 地址，可以运行：
 
 ```bash
 ./setup-api.sh
 ```
 
-向导只问两个问题：
-
-| 问题 | 你填什么 |
-|---|---|
-| `base_url` | API 中转站 / OpenAI 兼容接口地址，例如 `https://api.deepseek.com/v1` |
-| `model` | 默认模型，不知道就直接回车 |
-
-向导会自动生成：
-
-```text
-~/.codex/config.toml.profile.api
-```
-
-并尝试访问 `base_url/models`，帮你提前发现地址写错、域名不可用等问题。
-
-> API key 不在向导里填。第一次切到 API 后，Codex Desktop 会弹窗让你粘贴 key。
-
-### 第 3 步：切换
+只想切换账号/API，可以运行：
 
 ```bash
 ./switch.sh api      # 切到 API 代理
@@ -99,7 +117,8 @@ cd codex-profile-switch
 ## 常用命令
 
 ```bash
-./setup-api.sh              # 第一次配置 API 地址
+./start.sh                  # 小白向导：安装/配置/切换一条龙
+./setup-api.sh              # 只重新配置 API 地址
 ./switch.sh api             # 切到 API 代理
 ./switch.sh chatgpt         # 切回个人账号
 ./switch.sh --verify        # 检查当前状态
@@ -146,7 +165,7 @@ Codex Desktop 会按当前账号 / API 配置过滤历史会话。你切到 API 
 
 ## 高级说明：profile / provider / 回滚
 
-普通用户只需要看上面的 3 步。下面是给想了解细节的人看的。
+普通用户只需要运行 `./start.sh` 或上面的一行命令。下面是给想了解细节的人看的。
 
 第一次使用前，工具会准备两份 Codex profile：
 

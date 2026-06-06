@@ -2,8 +2,13 @@
 
 ## Unreleased
 
-- Rewrite README introduction around the v1.3.0 non-developer workflow: install, paste API base URL, switch.
+- Add `start.sh`, a one-command beginner entrypoint that downloads/updates the tool, saves the ChatGPT profile, launches API setup, and optionally switches to API mode.
+- Rewrite README quick start around the simplest workflow: copy one command, paste API base URL, restart Codex.
 - Update `SKILL.md` so agents prefer `setup-api.sh` for first-time API setup and never ask users to paste API keys into chat.
+- `setup-api.sh`: replace one-shot ping with retry loop. On unreachable / 404 base_url, ask whether to re-enter; soften failure copy from `❌ Connection failed` to a warning that still notes the config has been written.
+- `setup-api.sh`: drop the `gpt-5.5` default model. Model name is now mandatory and the prompt lists examples per relay (DeepSeek, OpenRouter, OpenAI-compatible) since no single name works everywhere.
+- `start.sh`: wrap the `switch.sh api` call so a Codex-still-running failure no longer kills the script under `set -e`. Print a clear fallback ("Cmd+Q Codex, then re-run switch.sh api") and always reach the "常用命令" footer.
+- `start.sh`: `ask_yes_no` now accepts Chinese answers (是/要/好/否/不/不要/算了/...) in addition to y/n.
 
 ## v1.3.0
 

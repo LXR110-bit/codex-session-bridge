@@ -32,6 +32,7 @@ fi
 # 2. Make scripts executable
 chmod +x "$REPO_DIR/switch.sh"
 [ -f "$REPO_DIR/setup-api.sh" ] && chmod +x "$REPO_DIR/setup-api.sh"
+[ -f "$REPO_DIR/start.sh" ] && chmod +x "$REPO_DIR/start.sh"
 
 # 3. Offer to symlink into ~/.claude/skills/
 echo ""
@@ -75,7 +76,10 @@ done
 echo ""
 echo "==> Done."
 echo ""
-echo "Quick start:"
+echo "Beginner start:"
+echo "    $REPO_DIR/start.sh"
+echo ""
+echo "Quick commands:"
 echo "    $REPO_DIR/switch.sh --help"
 echo "    $REPO_DIR/switch.sh --verify"
 echo "    $REPO_DIR/switch.sh chatgpt"

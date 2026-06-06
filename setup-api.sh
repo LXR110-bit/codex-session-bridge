@@ -28,29 +28,95 @@ if [ ! -d "$CODEX_HOME" ]; then
     exit 1
 fi
 
-# ── Q1: base_url ─────────────────────────────────────────────────────────────
+# ── Helper: ask yes/no with default, accept Chinese ─────────────────────────
+ask_yn() {
+    prompt="$1"; default="$2"
+    if [ "$default" = "Y" ]; then suffix="[Y/n]"; else suffix="[y/N]"; fi
+    printf '    %s %s ' "$prompt" "$suffix"
+    read -r ans || ans=""
+    [ -z "$ans" ] && { [ "$default" = "Y" ]; return; }
+    case "$ans" in
+        y|Y|yes|YES|Yes|是|要|好|好的|可以) return 0 ;;
+        *) return 1 ;;
+    esac
+}
+
+# ── Helper: probe base_url, returns 0 if usable, 1 if user wants to redo ────
+probe_base_url() {
+    url="$1"
+    if ! command -v curl > /dev/null; then
+        echo "    ℹ️  curl not found — skipping connectivity check."
+        return 0
+    fi
+    echo ""
+    echo "    探测 $url/models ..."
+    HTTP_CODE=$(curl -sS -o /dev/null -w '%{http_code}' \
+        --max-time 10 \
+        "$url/models" 2>/tmp/setup-api-probe-err.$$) || HTTP_CODE="000"
+    case "$HTTP_CODE" in
+        200)
+            echo "    ✅ HTTP 200 — 地址可用。"
+            rm -f /tmp/setup-api-probe-err.$$
+            return 0
+            ;;
+        401|403)
+            echo "    ✅ HTTP $HTTP_CODE — 地址可用（需要鉴权，符合预期，API key 之后由 Codex 弹窗填）。"
+            rm -f /tmp/setup-api-probe-err.$$
+            return 0
+            ;;
+        404)
+            echo "    ⚠️  HTTP 404 — 主机能连上，但 /v1/models 不存在。可能 base_url 没写到 /v1，或这家中转站不兼容 OpenAI /v1。"
+            ;;
+        000)
+            echo "    ⚠️  连不上。可能是网络问题、地址拼错、少了 https:// 或 /v1。"
+            err_msg=$(head -1 /tmp/setup-api-probe-err.$$ 2>/dev/null || true)
+            [ -n "$err_msg" ] && echo "       $err_msg"
+            ;;
+        *)
+            echo "    ℹ️  HTTP $HTTP_CODE — 不太常见的返回，主机有响应但不一定对。"
+            ;;
+    esac
+    rm -f /tmp/setup-api-probe-err.$$
+    echo ""
+    if ask_yn "重新填 base_url？（选 N 表示「我就要这个地址，继续写文件」）" "Y"; then
+        return 1
+    fi
+    return 0
+}
+
+# ── Q1: base_url（带探测 + 重试循环）────────────────────────────────────────
 echo "Q1. API proxy base URL"
 echo "    Examples:"
 echo "      https://api.deepseek.com/v1"
 echo "      https://openrouter.ai/api/v1"
 echo "      https://your-proxy.example.com/v1"
 echo "    (Must be an OpenAI-compatible /v1 endpoint.)"
-read -r -p "    base_url: " BASE_URL
-if [ -z "$BASE_URL" ]; then
-    echo "❌ base_url is required." >&2
-    exit 1
-fi
+while true; do
+    read -r -p "    base_url: " BASE_URL
+    if [ -z "$BASE_URL" ]; then
+        echo "❌ base_url is required." >&2
+        continue
+    fi
+    BASE_URL="${BASE_URL%/}"
+    if probe_base_url "$BASE_URL"; then
+        break
+    fi
+done
 
-# Normalize: strip trailing slashes
-BASE_URL="${BASE_URL%/}"
-
-# ── Q2: default model ────────────────────────────────────────────────────────
+# ── Q2: default model（必填，不同中转站名字不一样，没有通用默认值）──────────
 echo ""
 echo "Q2. Default model name"
-echo "    Examples: gpt-5.5, deepseek-chat, claude-sonnet-4, openrouter/auto"
-echo "    Press Enter to use gpt-5.5 (works on most OpenAI-compatible relays)."
-read -r -p "    model [gpt-5.5]: " MODEL
-MODEL="${MODEL:-gpt-5.5}"
+echo "    必须填一个这家中转站支持的模型名，不同中转站名字不一样。"
+echo "    Examples:"
+echo "      DeepSeek:    deepseek-chat / deepseek-reasoner"
+echo "      OpenRouter:  openrouter/auto / anthropic/claude-sonnet-4"
+echo "      OpenAI 兼容: gpt-4o / gpt-4o-mini / gpt-4-turbo"
+echo "    填错了 Codex 起来会报 model not found，回来重跑 setup-api.sh 即可。"
+while true; do
+    read -r -p "    model: " MODEL
+    if [ -n "$MODEL" ]; then break; fi
+    echo "    ❌ 模型名不能空。"
+done
 
 # ── Backup existing profile if present ──────────────────────────────────────
 if [ -f "$TARGET" ]; then
@@ -79,27 +145,6 @@ requires_openai_auth = true
 EOF_PROFILE
 chmod 600 "$TARGET"
 echo "    ✅ written (chmod 600)"
-
-# ── Ping the proxy (unauthenticated, just checks reachability) ───────────────
-echo ""
-echo "==> Pinging $BASE_URL/models to verify host is reachable..."
-if ! command -v curl > /dev/null; then
-    echo "    ℹ️  curl not found — skipping connectivity check."
-else
-    HTTP_CODE=$(curl -sS -o /dev/null -w '%{http_code}' \
-        --max-time 10 \
-        "$BASE_URL/models" 2>/tmp/setup-api-probe-err.$$) || HTTP_CODE="000"
-
-    case "$HTTP_CODE" in
-        200) echo "    ✅ HTTP 200 — host reachable." ;;
-        401|403) echo "    ✅ HTTP $HTTP_CODE — host reachable (auth required, expected for an unauthenticated probe)." ;;
-        404) echo "    ⚠️  HTTP 404 — host reachable, but /v1/models doesn't exist. Double-check base_url ends in /v1." ;;
-        000) echo "    ❌ Connection failed. base_url unreachable or DNS error."
-             echo "       $(head -1 /tmp/setup-api-probe-err.$$ 2>/dev/null)" ;;
-        *)   echo "    ℹ️  HTTP $HTTP_CODE — unusual response, but host responded. Verify with your relay's docs." ;;
-    esac
-    rm -f /tmp/setup-api-probe-err.$$
-fi
 
 # ── Final hints ─────────────────────────────────────────────────────────────
 echo ""

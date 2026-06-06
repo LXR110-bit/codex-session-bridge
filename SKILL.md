@@ -7,7 +7,7 @@ description: Help non-developer users switch Codex Desktop between a ChatGPT per
 
 This skill is for users who do **not** want to edit TOML or understand Codex provider internals.
 
-Main promise: the user pastes an OpenAI-compatible API base URL, runs the setup wizard, and can then switch Codex between:
+Main promise: the user runs one beginner command or local `start.sh`, pastes an OpenAI-compatible API base URL, and can then switch Codex between:
 
 - ChatGPT personal account
 - API proxy
@@ -37,13 +37,25 @@ not enough), then retry."**
 
 ### 2. First-time API setup when needed
 
-If the user asks to configure API proxy, says they only have an API URL, or `~/.codex/config.toml.profile.api` is missing, guide them through the local wizard:
+If the user is a beginner, asks to configure API proxy, says they only have an API URL, or `~/.codex/config.toml.profile.api` is missing, prefer the one-stop beginner entrypoint:
+
+```bash
+~/.claude/skills/codex-profile-switch/start.sh
+```
+
+If the repo is not installed locally, share the remote one-line command instead:
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/LXR110-bit/codex-profile-switch/main/start.sh)
+```
+
+If they only want to regenerate the API profile, use the smaller wizard:
 
 ```bash
 ~/.claude/skills/codex-profile-switch/setup-api.sh
 ```
 
-The wizard asks for:
+The setup wizard asks for:
 
 1. API proxy base URL, e.g. `https://api.deepseek.com/v1`.
 2. Default model; pressing Enter uses the default.
@@ -124,7 +136,7 @@ be visible."
 - `~/.codex/config.toml.profile.chatgpt`
 - `~/.codex/config.toml.profile.api`
 
-If the API profile is missing, prefer `setup-api.sh` over manual template editing. If the ChatGPT profile is missing and Codex is currently logged into ChatGPT, tell the user they can seed it with `cp ~/.codex/config.toml ~/.codex/config.toml.profile.chatgpt`.
+If the API profile is missing and the user is non-technical, prefer `start.sh`; if they only want API config regeneration, prefer `setup-api.sh`; avoid manual template editing unless they ask for advanced control. If the ChatGPT profile is missing and Codex is currently logged into ChatGPT, tell the user they can seed it with `cp ~/.codex/config.toml ~/.codex/config.toml.profile.chatgpt`.
 
 ## API 中转站和密钥说明 / Credentials and API proxy setup
 
