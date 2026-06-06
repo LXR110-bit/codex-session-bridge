@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.0.3
+
+- Fix ShellCheck findings in `switch.sh` so GitHub Actions CI passes cleanly.
+- Keep JSONL distribution scanning filename-safe with `find -print0 | xargs -0`.
+
 ## v1.0.2
 
 - Add Chinese README banner image.

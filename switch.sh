@@ -6,7 +6,7 @@
 
 set -euo pipefail
 
-VERSION="1.0.2"
+VERSION="1.0.3"
 CODEX_HOME="${CODEX_HOME:-$HOME/.codex}"
 
 DRY_RUN=0
@@ -94,8 +94,8 @@ print_provider_distribution_jsonl() {
         dirs+=("$dir")
     done < <(find_jsonl_dirs)
     if [ ${#dirs[@]} -gt 0 ]; then
-        find "${dirs[@]}" -type f -name "*.jsonl" 2>/dev/null \
-            | xargs grep -h '"model_provider"' 2>/dev/null \
+        find "${dirs[@]}" -type f -name "*.jsonl" -print0 2>/dev/null \
+            | xargs -0 grep -h '"model_provider"' 2>/dev/null \
             | grep -oE '"model_provider":"[^"]+"' \
             | sort | uniq -c || true
     else
@@ -379,7 +379,7 @@ done < <(find_jsonl_dirs)
 if [ ${#SEARCH_DIRS[@]} -gt 0 ]; then
     while IFS= read -r f; do
         [ -n "$f" ] || continue
-        rel="${f#$CODEX_HOME/}"
+        rel="${f#"$CODEX_HOME"/}"
         bak="$BACKUP_DIR/$(echo "$rel" | tr '/' '_').bak"
         cp "$f" "$bak"
         printf '%s\t%s\n' "$f" "$bak" >> "$MANIFEST"
