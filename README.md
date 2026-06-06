@@ -93,16 +93,26 @@ cd codex-profile-switch
 | 个人 ChatGPT 账号 | `~/.codex/config.toml.profile.chatgpt` | `openai` |
 | API 代理 | `~/.codex/config.toml.profile.api` | `openai-custom` |
 
-最简单的方式：
+最简单的方式（v1.3.0+ 推荐）：
 
 ```bash
-# 如果你当前就是个人 ChatGPT 登录态，可以先复制当前配置
+# 个人 ChatGPT 账号 — 直接复制当前 Codex 登录态
 cp ~/.codex/config.toml ~/.codex/config.toml.profile.chatgpt
 
-# API 代理配置从模板开始，再编辑 base_url / 环境变量等
-cp examples/config.toml.api.example ~/.codex/config.toml.profile.api
-$EDITOR ~/.codex/config.toml.profile.api
+# API 代理 — 跑交互式向导，三个问题搞定
+./setup-api.sh
 ```
+
+向导会问你两个问题：
+
+1. **base_url** —— 你中转站的 OpenAI 兼容地址（如 `https://api.deepseek.com/v1`）
+2. **默认模型** —— 留空走 `gpt-5.5`，也可以填 `deepseek-chat` 等
+
+填完后向导会自动 `curl base_url/models` 验证连接，提前发现「base_url 写错」「域名 DNS 解析失败」之类的坑。
+
+> **API key 不在向导里填**——Codex 桌面版会在第一次切到 API profile 后弹 GUI 让你粘贴 key，密钥存到 macOS Keychain（不进任何配置文件）。提前准备好你的 `sk-xxx` key 就行。
+>
+> 也可以手动写：`cp examples/config.toml.api.example ~/.codex/config.toml.profile.api && $EDITOR $_`。`install.sh` 跑完后如果 api profile 不存在也会主动问你要不要跳向导。
 
 ### 关于 API 中转站地址和 API key
 

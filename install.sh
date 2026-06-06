@@ -29,8 +29,9 @@ if [ ! -d "$CODEX_HOME" ]; then
     echo "⚠️  $CODEX_HOME does not exist. Is Codex Desktop installed and run at least once?"
 fi
 
-# 2. Make switch.sh executable
+# 2. Make scripts executable
 chmod +x "$REPO_DIR/switch.sh"
+[ -f "$REPO_DIR/setup-api.sh" ] && chmod +x "$REPO_DIR/setup-api.sh"
 
 # 3. Offer to symlink into ~/.claude/skills/
 echo ""
@@ -55,8 +56,19 @@ for p in chatgpt api; do
         echo "    ✅ $f already exists"
     else
         echo "    ❌ $f missing"
+        if [ "$p" = "api" ] && [ -f "$REPO_DIR/setup-api.sh" ]; then
+            read -r -p "       Run the interactive API setup wizard now? [Y/n] " yn
+            if [[ ! "$yn" =~ ^[Nn]$ ]]; then
+                bash "$REPO_DIR/setup-api.sh"
+                continue
+            fi
+        fi
         echo "       Sample:   $REPO_DIR/examples/config.toml.$p.example"
         echo "       Suggestion: cp the example, edit it to match your setup, then save as the path above."
+        if [ "$p" = "chatgpt" ]; then
+            echo "       Or, if Codex is already logged into your ChatGPT account:"
+            echo "         cp $CODEX_HOME/config.toml $f"
+        fi
     fi
 done
 
