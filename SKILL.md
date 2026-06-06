@@ -1,17 +1,20 @@
 ---
 name: codex-profile-switch
-description: Switch Codex Desktop between a ChatGPT personal account and a third-party OpenAI-compatible API proxy, automatically migrating conversation history so both sides see the full session list. Trigger phrases (Chinese + English):「切 api / 切回个人账号 / 切 chatgpt / codex 切档案 / codex 换 api」「switch codex to api / switch codex to chatgpt / codex profile / codex switch account」.
+description: Help non-developer users switch Codex Desktop between a ChatGPT personal account and an API proxy without losing conversation history. Includes an interactive API setup wizard where users only paste a base URL and choose a model; never ask users to paste API keys into chat. Trigger phrases:「切 api / 切回个人账号 / 配置 API 代理 / 设置 API 地址 / codex 切档案 / codex 换 api」「switch codex to api / setup codex api proxy / switch codex to chatgpt」.
 ---
 
 # Codex Profile Switch
 
-ChatGPT subscription quota running out at month-end is a common case for
-switching to an API proxy. The blocker is that Codex hides any conversation
-whose `model_provider` doesn't match the active profile, so naive switching
-"loses" all your history.
+This skill is for users who do **not** want to edit TOML or understand Codex provider internals.
 
-This skill wraps a battle-tested switch + history-migration script so both
-sides see the full conversation list.
+Main promise: the user pastes an OpenAI-compatible API base URL, runs the setup wizard, and can then switch Codex between:
+
+- ChatGPT personal account
+- API proxy
+
+while keeping the full conversation history visible on both sides.
+
+Important safety rule: **do not ask the user to paste an API key into chat.** `setup-api.sh` only asks for `base_url` and model. Codex Desktop prompts for the key in its GUI on first API use and stores it in macOS Keychain.
 
 ## When to trigger this skill
 
@@ -32,7 +35,22 @@ helper services are ignored.
 If blocked, tell the user: **"Cmd+Q to fully quit Codex (closing the window is
 not enough), then retry."**
 
-### 2. Diagnose or preview when appropriate
+### 2. First-time API setup when needed
+
+If the user asks to configure API proxy, says they only have an API URL, or `~/.codex/config.toml.profile.api` is missing, guide them through the local wizard:
+
+```bash
+~/.claude/skills/codex-profile-switch/setup-api.sh
+```
+
+The wizard asks for:
+
+1. API proxy base URL, e.g. `https://api.deepseek.com/v1`.
+2. Default model; pressing Enter uses the default.
+
+Do not ask for the API key in chat. Tell the user Codex Desktop will prompt for it after switching to API mode and reopening Codex.
+
+### 3. Diagnose or preview when appropriate
 
 If setup looks suspicious, run doctor first:
 
@@ -60,7 +78,7 @@ For non-default API provider names, use explicit migration providers:
 ~/.claude/skills/codex-profile-switch/switch.sh api --provider my-proxy --from openai
 ```
 
-### 3. Run the switch
+### 4. Run the switch
 
 ```bash
 ~/.claude/skills/codex-profile-switch/switch.sh chatgpt   # to ChatGPT account
@@ -76,7 +94,7 @@ The script:
    macOS bash 3.2 doesn't expand it.)
 4. Updates the `threads.model_provider` column in `state_5.sqlite`.
 
-### 4. Verify (mandatory)
+### 5. Verify (mandatory)
 
 ```bash
 ~/.claude/skills/codex-profile-switch/switch.sh --verify
@@ -87,7 +105,7 @@ appear, the rewrite missed something — investigate before letting the user
 reopen Codex (Codex will re-sync sqlite from jsonl at launch and bake the
 inconsistency in).
 
-### 5. Tell the user to restart Codex
+### 6. Tell the user to restart Codex
 
 After verification passes: "Restart Codex — all history conversations will
 be visible."
@@ -106,8 +124,7 @@ be visible."
 - `~/.codex/config.toml.profile.chatgpt`
 - `~/.codex/config.toml.profile.api`
 
-If either is missing, point the user at the templates in `examples/` and the
-[README](README.md) setup section.
+If the API profile is missing, prefer `setup-api.sh` over manual template editing. If the ChatGPT profile is missing and Codex is currently logged into ChatGPT, tell the user they can seed it with `cp ~/.codex/config.toml ~/.codex/config.toml.profile.chatgpt`.
 
 ## API 中转站和密钥说明 / Credentials and API proxy setup
 
@@ -119,7 +136,7 @@ If either is missing, point the user at the templates in `examples/` and the
 ~/.codex/config.toml.profile.api
 ```
 
-这个文件里应该包含 API provider 配置，例如 OpenAI 兼容接口的 `base_url`，以及 Codex 读取密钥用的 `env_key`，例如 `OPENAI_API_KEY`。
+普通用户不要手写这个文件，优先运行 `setup-api.sh`。这个文件里会包含 API provider 配置，例如 OpenAI 兼容接口的 `base_url`。API key 不写入该文件。
 
 如果用户问：
 

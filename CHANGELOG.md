@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Rewrite README introduction around the v1.3.0 non-developer workflow: install, paste API base URL, switch.
+- Update `SKILL.md` so agents prefer `setup-api.sh` for first-time API setup and never ask users to paste API keys into chat.
+
 ## v1.3.0
 
 - Add `setup-api.sh` interactive wizard for first-time API profile setup. Asks for base_url and default model, generates `~/.codex/config.toml.profile.api` with chmod 600, and pings the proxy to confirm host reachability before exiting.
