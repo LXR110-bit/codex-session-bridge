@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v1.4.0
 
 - Add `start.sh`, a one-command beginner entrypoint that downloads/updates the tool, saves the ChatGPT profile, launches API setup, and optionally switches to API mode.
 - Rewrite README quick start around the simplest workflow: copy one command, paste API base URL, restart Codex.
