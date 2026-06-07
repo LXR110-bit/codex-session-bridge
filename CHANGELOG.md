@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- README 加「使用流程总览」：mermaid 流程图 + 4 阶段表格，让用户能直接看出自己当前在哪一步。
+- README 加「跟 cc-switch / ccswitch 系列的区别」小节，明确两类工具的定位差异。
+
 ## v1.4.0
 
 - Add `start.sh`, a one-command beginner entrypoint that downloads/updates the tool, saves the ChatGPT profile, launches API setup, and optionally switches to API mode.

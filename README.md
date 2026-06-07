@@ -51,6 +51,28 @@ bash <(curl -fsSL https://raw.githubusercontent.com/LXR110-bit/codex-profile-swi
 
 ## 中文快速开始：只做 3 件事
 
+### 你现在处在哪一步？
+
+```mermaid
+flowchart TD
+    A[阶段 1<br/>装工具] -->|跑一行命令| B[阶段 2<br/>填 API 地址]
+    B -->|向导自动写入<br/>config.toml.profile.api| C[阶段 3<br/>切到 API 模式]
+    C -->|脚本同步迁移<br/>历史会话| D[阶段 4<br/>重启 Codex<br/>粘贴 API key]
+    D -.以后想切回.-> E[随时跑<br/>switch.sh chatgpt]
+    E -.再切过去.-> C
+```
+
+| 阶段 | 你要做什么 | 工具替你做什么 | 完成标志 |
+|---|---|---|---|
+| 1. 装工具 | 复制下面那行命令到终端回车 | 自动下载/更新仓库、检查依赖、可选装成 Claude skill | 看到「✅ 已存在 chatgpt profile」 |
+| 2. 填 API 地址 | 粘贴 `https://api.deepseek.com/v1` 这种地址、填一个该家中转站支持的模型名 | 探测地址能不能连通、写 `~/.codex/config.toml.profile.api` | 看到「✅ HTTP 200/401 — 地址可用」 |
+| 3. 切到 API | 选「现在切到 API」 | 改 `config.toml`、改 sqlite 索引、回写 jsonl 历史会话 | 看到 `--verify` 输出里 sqlite 和 jsonl 都是 `openai-custom` |
+| 4. 重启 Codex | Cmd+Q 完全退出 → 重新打开 → 弹窗里粘 `sk-xxx` | 从 macOS Keychain 读 key | Codex 里能看到完整历史会话列表 |
+
+要切回个人账号：跑 `bash switch.sh chatgpt`，重启 Codex。任何时候都可以来回切，不会丢历史。
+
+---
+
 ### 第 1 步：复制一行命令
 
 ```bash
@@ -127,6 +149,37 @@ cd codex-profile-switch
 ./switch.sh --list-backups  # 查看备份
 ./switch.sh --rollback <backup-dir> # 从备份恢复
 ```
+
+---
+
+## 跟 cc-switch / ccswitch 系列的区别
+
+经常有人问：网上不是已经有 cc-switch 之类的工具了吗？为啥还要这个？
+
+cc-switch 系列（farion1231/cc-switch、ksred/ccswitch、HamGuy/CCSwitch …）是**多家 AI 工具的 provider 配置管理器**：覆盖 Claude Code、Codex、Gemini CLI 等好几家，主要功能是把不同 API key + base URL 存成预设，一键切。但它们处理 Codex 时只动 `~/.codex/config.toml`，不会去管 Codex 的会话索引和历史 jsonl。
+
+这个工具**只服务 Codex Desktop 一家**，专门解决一个具体痛点：
+
+> Codex Desktop 按当前 `model_provider` 过滤历史会话。直接换 base URL 之后，旧会话会从列表里消失，看起来像被删了。
+
+所以两件事的差别：
+
+| | cc-switch 系列 | codex-profile-switch（本仓库） |
+|---|---|---|
+| 覆盖范围 | Claude Code、Codex、Gemini CLI 等 7 家 | 只 Codex Desktop |
+| 切换的对象 | API key、base URL、provider 预设 | ChatGPT 登录态 ↔ API 代理两种「模式」 |
+| 改动的文件 | 各工具的 config | `config.toml` + `state_5.sqlite` 索引 + 所有 `sessions/*.jsonl` 的 `model_provider` 字段 |
+| 历史会话归属 | 不动。切完老会话还在原 provider 名下，新档案里看不到 | 同步迁移。切完老会话出现在新模式下 |
+| 形态 | 跨平台 GUI / 系统托盘 | 纯 bash 脚本 + 一行命令 |
+| 安装 | 下载 .dmg、`brew install --cask` 等 | 跑一行 `bash <(curl ...)`，无需 admin |
+
+**两者并不冲突**：你完全可以用 cc-switch 管理多个工具的 provider 预设，再用本仓库的 `switch.sh` 给 Codex 补上历史会话迁移这一步。
+
+如果你符合下面任一条，本仓库更合适：
+
+- 只用 Codex Desktop，不需要管 Claude Code、Gemini 那些；
+- 切完发现历史会话没了，想让它们重新显示；
+- 这台 mac 没有 admin 权限，装不了 Homebrew / .dmg。
 
 ---
 
