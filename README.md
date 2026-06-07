@@ -1,6 +1,6 @@
 # Codex Session Bridge（Codex 会话桥）
 
-![Codex Session Bridge 横幅](docs/assets/codex-session-bridge-banner.svg)
+![Codex Session Bridge 横幅](docs/assets/codex-session-bridge-bannerV2.png)
 
 > 中文说明在前，English README follows below.<br>
 > 原名：`codex-profile-switch`。新定位：**Codex 会话连续性工具**，不是 API 管理器。
