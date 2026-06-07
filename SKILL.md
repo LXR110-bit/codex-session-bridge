@@ -54,16 +54,16 @@ If the user is a beginner, asks to configure API proxy, says they only have an A
 ~/.claude/skills/codex-session-bridge/start.sh
 ```
 
-Backward-compatible old install path may still be:
+Installed skill path:
 
 ```bash
-~/.claude/skills/codex-profile-switch/start.sh
+~/.claude/skills/codex-session-bridge/start.sh
 ```
 
 If the repo is not installed locally, share the remote one-line command instead:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/LXR110-bit/codex-profile-switch/main/start.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/LXR110-bit/codex-session-bridge/main/start.sh)
 ```
 
 If they only want to regenerate the API profile, use the smaller wizard:

@@ -2,15 +2,15 @@
 # start.sh — one-command beginner entrypoint for Codex Session Bridge.
 #
 # Remote use:
-#   bash <(curl -fsSL https://raw.githubusercontent.com/LXR110-bit/codex-profile-switch/main/start.sh)
+#   bash <(curl -fsSL https://raw.githubusercontent.com/LXR110-bit/codex-session-bridge/main/start.sh)
 #
 # Local use:
 #   ./start.sh
 
 set -euo pipefail
 
-REPO_URL="https://github.com/LXR110-bit/codex-profile-switch.git"  # old repo URL kept until GitHub repo is renamed
-TARBALL_URL="https://github.com/LXR110-bit/codex-profile-switch/archive/refs/heads/main.tar.gz"
+REPO_URL="https://github.com/LXR110-bit/codex-session-bridge.git"
+TARBALL_URL="https://github.com/LXR110-bit/codex-session-bridge/archive/refs/heads/main.tar.gz"
 INSTALL_DIR="${CODEX_SESSION_BRIDGE_HOME:-${CODEX_PROFILE_SWITCH_HOME:-$HOME/.codex-session-bridge}}"
 CODEX_HOME="${CODEX_HOME:-$HOME/.codex}"
 CLAUDE_SKILLS_DIR="${CLAUDE_SKILLS_DIR:-$HOME/.claude/skills}"

@@ -39,15 +39,13 @@ Codex Session Bridge：Codex 会话桥。让 Codex Desktop 在个人账号和 AP
 当前仓库链接：
 
 ```text
-https://github.com/LXR110-bit/codex-profile-switch
+https://github.com/LXR110-bit/codex-session-bridge
 ```
-
-> 如果你之后把 GitHub 仓库改名，建议改成：`codex-session-bridge`。GitHub 通常会自动保留旧链接跳转，但 README 里的安装命令也要同步更新。
 
 对方只需要复制这一行命令到终端里运行：
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/LXR110-bit/codex-profile-switch/main/start.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/LXR110-bit/codex-session-bridge/main/start.sh)
 ```
 
 这个小白向导会自动完成：
@@ -90,7 +88,7 @@ flowchart TD
 ### 第 1 步：复制一行命令
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/LXR110-bit/codex-profile-switch/main/start.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/LXR110-bit/codex-session-bridge/main/start.sh)
 ```
 
 ### 第 2 步：粘贴 API 地址
@@ -122,8 +120,8 @@ https://api.deepseek.com/v1
 如果你不想用一行命令，也可以手动下载仓库：
 
 ```bash
-git clone https://github.com/LXR110-bit/codex-profile-switch.git
-cd codex-profile-switch
+git clone https://github.com/LXR110-bit/codex-session-bridge.git
+cd codex-session-bridge
 ./start.sh
 ```
 
@@ -320,8 +318,8 @@ API keys are not handled by this repo. Codex Desktop prompts for the key on firs
 ## Quick start
 
 ```bash
-git clone https://github.com/LXR110-bit/codex-profile-switch.git
-cd codex-profile-switch
+git clone https://github.com/LXR110-bit/codex-session-bridge.git
+cd codex-session-bridge
 ./install.sh
 ```
 

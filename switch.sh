@@ -2,7 +2,7 @@
 # Codex Session Bridge — bridge Codex Desktop between ChatGPT account and API proxy
 # while preserving conversation history.
 #
-# Repo: https://github.com/LXR110-bit/codex-profile-switch
+# Repo: https://github.com/LXR110-bit/codex-session-bridge
 
 set -euo pipefail
 
