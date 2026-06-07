@@ -23,6 +23,8 @@ jobs:
         run: |
           bash -n switch.sh
           bash -n install.sh
+          bash -n setup-api.sh
+          bash -n start.sh
 
       - name: ShellCheck
         run: shellcheck switch.sh install.sh

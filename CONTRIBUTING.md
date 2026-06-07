@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for helping improve `codex-profile-switch`.
+Thanks for helping improve `Codex Session Bridge`.
 
 ## Before opening a PR
 
@@ -9,6 +9,8 @@ Run these checks locally:
 ```bash
 bash -n switch.sh
 bash -n install.sh
+bash -n setup-api.sh
+bash -n start.sh
 ./switch.sh --version
 ./switch.sh --help
 ```
@@ -43,7 +45,7 @@ CODEX_HOME="$tmp" ./switch.sh --verify
 - Never commit real API keys, proxy URLs, access tokens, or personal paths.
 - Do not test destructive changes against your real `~/.codex` unless you have a backup.
 - Keep `openai` as the built-in ChatGPT provider; do not redefine it in `[model_providers]`.
-- If changing backup or rollback behavior, test both switch and rollback with fake data.
+- If changing backup or rollback behavior, test both bridge/switch and rollback with fake data.
 
 ## Issue reports
 

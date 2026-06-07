@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Installer for codex-profile-switch.
+# Installer for Codex Session Bridge.
 # - Verifies dependencies
 # - Optionally symlinks the skill into ~/.claude/skills/ so Claude can invoke it
 # - Optionally creates initial profile files from your current config.toml
@@ -10,7 +10,7 @@ REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
 CODEX_HOME="${CODEX_HOME:-$HOME/.codex}"
 CLAUDE_SKILLS_DIR="${CLAUDE_SKILLS_DIR:-$HOME/.claude/skills}"
 
-echo "==> codex-profile-switch installer"
+echo "==> Codex Session Bridge installer"
 echo "    Repo:        $REPO_DIR"
 echo "    CODEX_HOME:  $CODEX_HOME"
 echo ""
@@ -36,10 +36,10 @@ chmod +x "$REPO_DIR/switch.sh"
 
 # 3. Offer to symlink into ~/.claude/skills/
 echo ""
-read -r -p "Symlink skill into $CLAUDE_SKILLS_DIR/codex-profile-switch ? [y/N] " yn
+read -r -p "Symlink skill into $CLAUDE_SKILLS_DIR/codex-session-bridge ? [y/N] " yn
 if [[ "$yn" =~ ^[Yy]$ ]]; then
     mkdir -p "$CLAUDE_SKILLS_DIR"
-    target="$CLAUDE_SKILLS_DIR/codex-profile-switch"
+    target="$CLAUDE_SKILLS_DIR/codex-session-bridge"
     if [ -e "$target" ]; then
         echo "    $target already exists — skipping (remove it manually if you want to overwrite)"
     else

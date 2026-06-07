@@ -1,4 +1,4 @@
-# How it works
+# How Codex Session Bridge works
 
 > Internal mechanics, written down so the next person debugging this doesn't
 > have to re-derive everything from scratch.
@@ -6,10 +6,9 @@
 ## The problem
 
 Codex Desktop ties every conversation to a `model_provider` value. When you
-switch profiles (e.g. ChatGPT account ↔ third-party API proxy), the new profile
+move between profiles (e.g. ChatGPT account ↔ third-party API proxy), the new profile
 declares a *different* `model_provider`, and Codex hides any conversation whose
-provider doesn't match the active one. You "lose" all your history every time
-you switch.
+provider doesn't match the active one. Your history looks "lost" every time the active provider changes.
 
 ## Where history is stored
 
@@ -70,7 +69,7 @@ accumulate — clean up monthly, keep the most recent 2-3.
 
 ## Validation
 
-After every switch, run:
+After every bridge/switch, run:
 
 ```sh
 ./switch.sh --verify

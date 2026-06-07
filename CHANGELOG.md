@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Rename public positioning from `codex-profile-switch` to **Codex Session Bridge（Codex 会话桥）**.
+- Reframe the project as a Codex session-continuity tool rather than an API/provider manager.
+- Update README, SKILL metadata, installer/CLI copy, and GitHub issue copy to answer the ccswitch comparison directly.
+- Add `docs/assets/codex-session-bridge-banner.svg` with the new positioning: history conversations stay visible across ChatGPT/API modes.
+
 ## v1.4.1
 
 - README 加「使用流程总览」：mermaid 流程图 + 4 阶段表格，让用户能直接看出自己当前在哪一步。

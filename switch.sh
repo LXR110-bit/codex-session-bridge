@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# codex-profile-switch — switch Codex Desktop between ChatGPT account and API proxy
+# Codex Session Bridge — bridge Codex Desktop between ChatGPT account and API proxy
 # while preserving conversation history.
 #
 # Repo: https://github.com/LXR110-bit/codex-profile-switch
@@ -17,11 +17,11 @@ ROLLBACK_DIR=""
 
 print_help() {
     cat <<'EOF_HELP'
-codex-profile-switch — switch Codex between ChatGPT account and API proxy.
+Codex Session Bridge — keep Codex conversations visible across ChatGPT/API modes.
 
 USAGE:
-  switch.sh <profile>                 Switch to the named profile
-  switch.sh --dry-run <profile>       Preview changes, without writing files
+  switch.sh <profile>                 Bridge to the named profile and migrate session ownership
+  switch.sh --dry-run <profile>       Preview bridge changes, without writing files
   switch.sh <profile> --dry-run       Same preview mode
   switch.sh api --provider <name>     Use a custom target model_provider
   switch.sh api --from <name>         Use a custom source model_provider
@@ -203,7 +203,7 @@ rollback_backup() {
 }
 
 doctor() {
-    echo "==> codex-profile-switch doctor"
+    echo "==> Codex Session Bridge doctor"
     echo "    version:    $VERSION"
     echo "    CODEX_HOME: $CODEX_HOME"
     echo ""
@@ -270,7 +270,7 @@ parse_args() {
     while [ "$#" -gt 0 ]; do
         case "$1" in
             --help|-h) print_help; exit 0 ;;
-            --version|-V) echo "codex-profile-switch $VERSION"; exit 0 ;;
+            --version|-V) echo "codex-session-bridge $VERSION"; exit 0 ;;
             --verify) verify_state; exit 0 ;;
             --doctor) doctor; exit 0 ;;
             --list-backups) list_backups; exit 0 ;;
@@ -336,7 +336,7 @@ JSONL_COUNT=$(count_jsonl_to_rewrite "$OLD_PROVIDER")
 SQLITE_COUNT=$(count_sqlite_to_rewrite "$OLD_PROVIDER")
 
 if [ "$DRY_RUN" -eq 1 ]; then
-    echo "==> Dry run: switch to '$TARGET' mode"
+    echo "==> Dry run: bridge to '$TARGET' mode"
     echo "    CODEX_HOME:      $CODEX_HOME"
     echo "    Profile file:    $PROFILE"
     echo "    Provider change: $OLD_PROVIDER -> $NEW_PROVIDER"
@@ -349,9 +349,9 @@ if [ "$DRY_RUN" -eq 1 ]; then
     echo "    - Rewrite $SQLITE_COUNT sqlite thread row(s) containing $OLD_PROVIDER"
     echo ""
     if codex_is_running; then
-        echo "⚠️  Codex GUI or app-server appears to be running. Real switch would refuse to run."
+        echo "⚠️  Codex GUI or app-server appears to be running. Real bridge would refuse to run."
     else
-        echo "✅ Codex GUI/app-server not detected. Real switch can proceed."
+        echo "✅ Codex GUI/app-server not detected. Real bridge can proceed."
     fi
     exit 0
 fi
@@ -367,7 +367,7 @@ mkdir -p "$BACKUP_DIR"
 [ -f "$CODEX_HOME/config.toml" ] && cp "$CODEX_HOME/config.toml" "$BACKUP_DIR/config.toml.bak"
 [ -f "$CODEX_HOME/state_5.sqlite" ] && cp "$CODEX_HOME/state_5.sqlite" "$BACKUP_DIR/state_5.sqlite.bak"
 
-echo "==> [2/4] Switch config.toml to '$TARGET' profile"
+echo "==> [2/4] Bridge config.toml to '$TARGET' profile"
 cp "$PROFILE" "$CODEX_HOME/config.toml"
 
 echo "==> [3/4] Rewrite jsonl: $OLD_PROVIDER -> $NEW_PROVIDER"
@@ -401,7 +401,7 @@ if [ -f "$CODEX_HOME/state_5.sqlite" ]; then
 fi
 
 echo ""
-echo "✅ Switched to '$TARGET' mode."
+echo "✅ Bridged to '$TARGET' mode."
 echo "   Backup: $BACKUP_DIR"
 echo "   Rollback: ./switch.sh --rollback '$BACKUP_DIR'"
 echo ""

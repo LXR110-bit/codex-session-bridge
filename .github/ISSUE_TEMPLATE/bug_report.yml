@@ -1,5 +1,5 @@
 name: Bug report
-about: Report a problem with codex-profile-switch
+about: Report a problem with Codex Session Bridge
 title: "[Bug]: "
 labels: [bug]
 body:
@@ -57,7 +57,7 @@ body:
     id: problem
     attributes:
       label: What happened?
-      description: Are conversations missing, counts wrong, config broken, or did Codex fail to start?
+      description: Are conversations missing after bridging, counts wrong, config broken, or did Codex fail to start?
     validations:
       required: true
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# start.sh — one-command beginner entrypoint for codex-profile-switch.
+# start.sh — one-command beginner entrypoint for Codex Session Bridge.
 #
 # Remote use:
 #   bash <(curl -fsSL https://raw.githubusercontent.com/LXR110-bit/codex-profile-switch/main/start.sh)
@@ -9,9 +9,9 @@
 
 set -euo pipefail
 
-REPO_URL="https://github.com/LXR110-bit/codex-profile-switch.git"
+REPO_URL="https://github.com/LXR110-bit/codex-profile-switch.git"  # old repo URL kept until GitHub repo is renamed
 TARBALL_URL="https://github.com/LXR110-bit/codex-profile-switch/archive/refs/heads/main.tar.gz"
-INSTALL_DIR="${CODEX_PROFILE_SWITCH_HOME:-$HOME/.codex-profile-switch}"
+INSTALL_DIR="${CODEX_SESSION_BRIDGE_HOME:-${CODEX_PROFILE_SWITCH_HOME:-$HOME/.codex-session-bridge}}"
 CODEX_HOME="${CODEX_HOME:-$HOME/.codex}"
 CLAUDE_SKILLS_DIR="${CLAUDE_SKILLS_DIR:-$HOME/.claude/skills}"
 
@@ -65,8 +65,8 @@ checkout_repo() {
     fi
 
     if [ -e "$INSTALL_DIR" ] && [ "$(find "$INSTALL_DIR" -mindepth 1 -maxdepth 1 2>/dev/null | wc -l | tr -d ' ')" != "0" ]; then
-        say "❌ $INSTALL_DIR 已存在但不是 codex-profile-switch 仓库。"
-        say "   请换一个目录，或设置 CODEX_PROFILE_SWITCH_HOME=/你的目录 后重试。"
+        say "❌ $INSTALL_DIR 已存在但不是 Codex Session Bridge 仓库。"
+        say "   请换一个目录，或设置 CODEX_SESSION_BRIDGE_HOME=/你的目录 后重试。"
         exit 1
     fi
 
@@ -79,7 +79,7 @@ checkout_repo() {
     fi
 
     if command -v curl >/dev/null 2>&1 && command -v tar >/dev/null 2>&1; then
-        tmp_tar="${TMPDIR:-/tmp}/codex-profile-switch-main.$$.tar.gz"
+        tmp_tar="${TMPDIR:-/tmp}/codex-session-bridge-main.$$.tar.gz"
         curl -fsSL "$TARBALL_URL" -o "$tmp_tar"
         tar -xzf "$tmp_tar" -C "$INSTALL_DIR" --strip-components=1
         rm -f "$tmp_tar"
@@ -106,12 +106,12 @@ SETUP_API="$REPO_DIR/setup-api.sh"
 
 say ""
 say "=============================================="
-say "Codex Profile Switch 小白向导"
+say "Codex Session Bridge（Codex 会话桥）小白向导"
 say "=============================================="
 say ""
 say "你只需要做 3 件事："
 say "  1. 粘贴 API 地址"
-say "  2. 选择是否现在切到 API"
+say "  2. 选择是否现在桥接到 API"
 say "  3. 重启 Codex，按弹窗粘贴 API key"
 say ""
 say "不会要求你把 API key 发给 AI，也不会把 key 写进配置文件。"
@@ -126,9 +126,9 @@ fi
 chmod +x "$SWITCH" "$SETUP_API" 2>/dev/null || true
 
 # Optional Claude skill install. Default no, so beginners can press Enter through it.
-if ask_yes_no "要顺便安装成 Claude skill 吗？之后可以直接说『切 api』。" "N"; then
+if ask_yes_no "要顺便安装成 Claude skill 吗？之后可以直接说『codex 会话桥 / 切 api』。" "N"; then
     mkdir -p "$CLAUDE_SKILLS_DIR"
-    target="$CLAUDE_SKILLS_DIR/codex-profile-switch"
+    target="$CLAUDE_SKILLS_DIR/codex-session-bridge"
     if [ -e "$target" ]; then
         say "    ℹ️ $target 已存在，跳过。"
     else
@@ -178,9 +178,9 @@ fi
 
 say ""
 if [ -f "$API_PROFILE" ]; then
-    if ask_yes_no "现在切到 API 代理吗？" "Y"; then
+    if ask_yes_no "现在桥接到 API 代理吗？" "Y"; then
         say ""
-        say "==> 准备切到 API 代理"
+        say "==> 准备桥接到 API 代理"
         say "    如果提示 Codex 正在运行，请先 Cmd+Q 完全退出 Codex 后重试。"
         switch_ok=0
         if bash "$SWITCH" api; then
@@ -190,30 +190,30 @@ if [ -f "$API_PROFILE" ]; then
         bash "$SWITCH" --verify || true
         say ""
         if [ "$switch_ok" -eq 1 ]; then
-            say "✅ 已切到 API 代理。"
+            say "✅ 已桥接到 API 代理。"
             say ""
             say "最后一步："
             say "  1. 重新打开 Codex Desktop"
             say "  2. 如果 Codex 弹窗要 API key，就粘贴你的 sk-xxx key"
             say "  3. 历史会话应该还在"
         else
-            say "⚠️ 切换没成功（最常见原因：Codex 还在运行）。"
+            say "⚠️ 桥接没成功（最常见原因：Codex 还在运行）。"
             say "   解决方法："
             say "     1. Cmd+Q 完全退出 Codex Desktop（关窗口不算）"
             say "     2. 重新跑：$REPO_DIR/switch.sh api"
             say "   配置已经保存好了，下次跑 switch.sh 不用再走向导。"
         fi
     else
-        say "已完成配置，暂不切换。以后运行："
+        say "已完成配置，暂不桥接。以后运行："
         say "  $REPO_DIR/switch.sh api"
     fi
 else
-    say "没有 API 配置，所以没有执行切换。"
+    say "没有 API 配置，所以没有执行桥接。"
 fi
 
 say ""
 say "常用命令："
-say "  切到 API：      $REPO_DIR/switch.sh api"
-say "  切回个人账号：  $REPO_DIR/switch.sh chatgpt"
+say "  桥接到 API：    $REPO_DIR/switch.sh api"
+say "  桥接回个人账号：$REPO_DIR/switch.sh chatgpt"
 say "  重新配置 API：  $REPO_DIR/setup-api.sh"
 say ""

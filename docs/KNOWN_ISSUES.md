@@ -1,11 +1,11 @@
-# Known issues / war stories
+# Codex Session Bridge known issues / war stories
 
 Real bugs and gotchas, documented so future you (or future contributors)
 don't waste time re-discovering them.
 
 ## Codex hides conversations whose provider doesn't match the active one
 
-The original motivation for this tool. See [HOW_IT_WORKS.md](HOW_IT_WORKS.md).
+The original motivation for Codex Session Bridge. See [HOW_IT_WORKS.md](HOW_IT_WORKS.md).
 
 ## Built-in `openai` provider cannot be overridden
 
@@ -42,7 +42,7 @@ shell. Either set `shopt -s globstar` *and* require bash ≥ 4, or use `find`.
 ## `pgrep -lf "Codex"` is too broad
 
 Matches `chrome_crashpad_handler` and `SkyComputerUseService` after Codex
-exits, blocking the switch even though those processes don't write sqlite.
+exits, blocking the bridge/switch even though those processes don't write sqlite.
 Match `Codex\.app/Contents/MacOS/Codex|codex app-server` instead.
 
 ## Two jsonl with the same basename in different date dirs collide on backup
@@ -57,7 +57,7 @@ path as the backup filename (`sessions_2026_05_20_rollout-abc.jsonl.bak`).
 
 If you change something inside Codex GUI (model, MCP server, reasoning effort,
 trusted projects), the change lands in `~/.codex/config.toml` only — not in
-either profile file. Next switch, the change is lost.
+either profile file. Next bridge/switch, the change is lost.
 
 Recommended habit: after any GUI change you want to keep, decide whether it
 belongs to one profile or both, then `cp` the live config over the relevant
@@ -69,4 +69,4 @@ This tool does not touch credentials. The ChatGPT side uses the Codex GUI's
 own auth (stored under `~/Library/Application Support/Codex/` on macOS, not
 `~/.codex/auth.json` in recent versions). The API side picks up
 `OPENAI_API_KEY` from the environment or the proxy's own mechanism. If
-auth is broken after a switch, fix it in Codex's normal login flow.
+auth is broken after a bridge/switch, fix it in Codex's normal login flow.
