@@ -6,7 +6,7 @@
 
 set -euo pipefail
 
-VERSION="1.4.0"
+VERSION="1.4.1"
 CODEX_HOME="${CODEX_HOME:-$HOME/.codex}"
 
 DRY_RUN=0
